@@ -1,0 +1,534 @@
+<html lang="es"><head>
+  <meta charset="utf-8">
+  <title>Checklist de configuracion de equipos</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 8mm;
+    }
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --text: #162033;
+      --muted: #52607a;
+      --border: #d8e0ee;
+      --border-strong: #b9c6dd;
+      --primary: #2f5bd3;
+      --primary-soft: #e9efff;
+      --accent: #1f9d8b;
+      --warning: #9a6700;
+      --warning-bg: #fff7db;
+      --shadow: 0 10px 30px rgba(18, 38, 63, 0.08);
+      --radius: 16px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.28;
+      font-size: 9.3pt;
+      margin: 0;
+      padding: 12px;
+      background:
+        radial-gradient(circle at top left, rgba(47, 91, 211, 0.08), transparent 26%),
+        linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
+    }
+    h1, h2, h3 {
+      margin: 0 0 6px 0;
+    }
+    h1 {
+      font-size: 17pt;
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-size: 10.8pt;
+      margin-top: 0;
+      padding: 0 0 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 {
+      font-size: 9.3pt;
+      margin-top: 10px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    p {
+      margin: 4px 0;
+    }
+    .muted {
+      color: var(--muted);
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .toolbar-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .toolbar-title {
+      margin: 0;
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .toolbar-subtitle {
+      margin: 2px 0 0 0;
+      color: var(--muted);
+      font-size: 8.7pt;
+    }
+    .action-button {
+      border: 0;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, #2048b8 100%);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(47, 91, 211, 0.25);
+    }
+    .action-button:hover {
+      filter: brightness(1.05);
+    }
+    .meta, .summary {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      overflow: hidden;
+      border-radius: 12px;
+      table-layout: fixed;
+    }
+    .meta td, .summary td, .summary th {
+      border: 1px solid var(--border);
+      padding: 6px 7px;
+      vertical-align: middle;
+    }
+    .meta td.label, .summary th {
+      width: 22%;
+      font-weight: bold;
+      background: var(--surface-alt);
+      text-align: left;
+    }
+    .meta-input {
+      width: 100%;
+      border: 1px solid transparent;
+      border-bottom-color: var(--border-strong);
+      background: transparent;
+      padding: 3px 1px 2px 1px;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+    .meta-input:focus {
+      border-color: #c8d6f2;
+      border-radius: 8px;
+      background: #f9fbff;
+    }
+    .meta-input::placeholder {
+      color: #8b97ac;
+    }
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 0 0;
+      display: grid;
+      gap: 5px;
+    }
+    .checklist li {
+      margin: 0;
+    }
+    .block {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 11px;
+      margin-top: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      break-inside: auto;
+    }
+    .note {
+      border-left: 4px solid var(--primary);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 8px 0;
+      background: var(--primary-soft);
+    }
+    .warning {
+      border-left: 4px solid var(--warning);
+      border-radius: 12px;
+      background: var(--warning-bg);
+      padding: 10px 12px;
+      margin: 8px 0;
+    }
+    .page-break {
+      display: none;
+    }
+    .small {
+      font-size: 9pt;
+    }
+    .check-item {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 7px;
+      align-items: start;
+      width: 100%;
+      padding: 5px 6px;
+      font-size: 8.7pt;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+    .check-item:hover {
+      border-color: #b8c8ea;
+      background: #f7faff;
+      transform: translateY(-1px);
+    }
+    .check-item input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      margin: 1px 0 0 0;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .check-text {
+      min-width: 0;
+    }
+    .check-item input[type="checkbox"]:checked + .check-text {
+      text-decoration: line-through;
+      color: #70809f;
+    }
+    .check-item.is-checked {
+      background: #f2f7ff;
+      border-color: #c7d6f5;
+    }
+    @media screen {
+      body {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+    }
+    @media print {
+      body {
+        padding: 0;
+        background: #fff;
+        font-size: 8.2pt;
+        line-height: 1.16;
+      }
+      .toolbar {
+        display: none;
+      }
+      h1 {
+        font-size: 15pt;
+        margin-bottom: 3px;
+      }
+      h2 {
+        font-size: 9.7pt;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+      }
+      p {
+        margin: 3px 0;
+      }
+      .meta, .summary {
+        margin-top: 6px;
+      }
+      .meta td, .summary td, .summary th {
+        padding: 4px 5px;
+      }
+      .meta-input {
+        padding: 1px 0;
+      }
+      .block {
+        box-shadow: none;
+        margin-top: 5px;
+        padding: 7px 8px;
+        border-radius: 8px;
+        break-inside: auto;
+      }
+      .check-item {
+        break-inside: auto;
+        transform: none;
+        padding: 4px 5px;
+        font-size: 7.8pt;
+        border-radius: 6px;
+      }
+      .check-item:hover {
+        transform: none;
+      }
+      .page-break {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="toolbar-text">
+      <p class="toolbar-title">Formulario rellenable y exportacion a PDF</p>
+      <p class="toolbar-subtitle">Los datos NO se guardan automaticamente. Usa el boton de Exportar a PDF para guardar.</p>
+    </div>
+    <button type="button" class="action-button" id="export-pdf">Exportar a PDF</button>
+  </div>
+
+  <div id="pdf-root">
+  <h1>Checklist de configuracion de equipos</h1>
+  <p class="muted">Documento operativo para preparar un equipo de principio a fin y validar que queda listo para entrega.</p>
+
+  <table class="meta">
+    <tbody><tr>
+      <td class="label">Empresa</td>
+      <td><input class="meta-input" data-field="empresa" placeholder="Escribe la empresa" value=""></td>
+      <td class="label">Fecha</td>
+      <td><input class="meta-input" data-field="fecha" placeholder="dd/mm/aaaa" value=""></td>
+    </tr>
+    <tr>
+      <td class="label">Tecnico</td>
+      <td><input class="meta-input" data-field="tecnico" placeholder="Nombre del tecnico" value=""></td>
+      <td class="label">Solicitud / alta</td>
+      <td><input class="meta-input" data-field="solicitud" placeholder="Numero o referencia" value=""></td>
+    </tr>
+    <tr>
+      <td class="label">Usuario final</td>
+      <td><input class="meta-input" data-field="usuario-final" placeholder="Nombre del usuario" value=""></td>
+      <td class="label">Correo final</td>
+      <td><input class="meta-input" data-field="correo-final" placeholder="usuario@empresa.com" value=""></td>
+    </tr>
+    <tr>
+      <td class="label">Nombre de equipo</td>
+      <td><input class="meta-input" data-field="nombre-equipo" placeholder="Nombre asignado al equipo" value=""></td>
+      <td class="label">Modelo / serie</td>
+      <td><input class="meta-input" data-field="modelo-serie" placeholder="Modelo o numero de serie" value=""></td>
+    </tr>
+  </tbody></table>
+
+  <div class="block">
+    <h2>1. Arranque inicial y preparacion del equipo</h2>
+    <ul class="checklist">
+      <li><label class="check-item" for="check-item-0"><input id="check-item-0" type="checkbox"><span class="check-text">Seleccionar la opcion de <strong>unirse a dominio</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-1"><input id="check-item-1" type="checkbox"><span class="check-text">Unir el equipo al <strong>Wi-Fi corporativo</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-2"><input id="check-item-2" type="checkbox"><span class="check-text">Crear la cuenta local con el nombre <strong>User</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-3"><input id="check-item-3" type="checkbox"><span class="check-text">Completar la configuracion inicial de Windows con los permisos y opciones corporativas definidos.</span></label></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h2>2. Creacion del usuario de dominio y del correo</h2>
+    <ul class="checklist">
+      <li><label class="check-item" for="check-item-4"><input id="check-item-4" type="checkbox"><span class="check-text">Entrar en <strong>DC01</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-5"><input id="check-item-5" type="checkbox"><span class="check-text">Ir a la unidad organizativa de la empresa correspondiente.</span></label></li>
+      <li><label class="check-item" for="check-item-6"><input id="check-item-6" type="checkbox"><span class="check-text">Copiar el <strong>usuario espejo</strong> indicado.</span></label></li>
+      <li><label class="check-item" for="check-item-7"><input id="check-item-7" type="checkbox"><span class="check-text">Rellenar el nombre de inicio de sesion con la regla: <strong>inicial del nombre + primer apellido completo + inicial del segundo apellido</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-8"><input id="check-item-8" type="checkbox"><span class="check-text">Antes de crear el usuario, comprobar en el panel de administracion de Microsoft 365 que ese identificador no existe ya.</span></label></li>
+      <li><label class="check-item" for="check-item-9"><input id="check-item-9" type="checkbox"><span class="check-text">Crear el usuario en Active Directory.</span></label></li>
+      <li><label class="check-item" for="check-item-10"><input id="check-item-10" type="checkbox"><span class="check-text">En las propiedades del usuario, rellenar el campo <strong>correo</strong> con la direccion que se va a generar.</span></label></li>
+      <li><label class="check-item" for="check-item-11"><input id="check-item-11" type="checkbox"><span class="check-text">En el apartado <strong>Telefonos</strong>, rellenar <strong>Buscapersonas</strong> con <strong>M365</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-12"><input id="check-item-12" type="checkbox"><span class="check-text">Aplicar los cambios para que la sincronizacion con ADC pueda generar la cuenta en Microsoft 365.</span></label></li>
+      <li><label class="check-item" for="check-item-13"><input id="check-item-13" type="checkbox"><span class="check-text">Esperar el tiempo de sincronizacion necesario, aproximadamente <strong>30 minutos</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-14"><input id="check-item-14" type="checkbox"><span class="check-text">Asignar licencia de correo en <strong>Office365 admin</strong>.</span></label></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h2>3. Union al dominio</h2>
+    <ul class="checklist">
+      <li><label class="check-item" for="check-item-15"><input id="check-item-15" type="checkbox"><span class="check-text">Habilitar la cuenta <strong>Administrador</strong> con la contrasena correcta.</span></label></li>
+      <li><label class="check-item" for="check-item-16"><input id="check-item-16" type="checkbox"><span class="check-text">Anadir el equipo al dominio <strong>grupo-alonso.dom</strong> o al dominio corporativo que corresponda.</span></label></li>
+      <li><label class="check-item" for="check-item-17"><input id="check-item-17" type="checkbox"><span class="check-text">Introducir las credenciales de administrador de dominio.</span></label></li>
+      <li><label class="check-item" for="check-item-18"><input id="check-item-18" type="checkbox"><span class="check-text">Esperar a que el alta en dominio se valide correctamente.</span></label></li>
+      <li><label class="check-item" for="check-item-19"><input id="check-item-19" type="checkbox"><span class="check-text">Reiniciar el equipo cuando lo solicite.</span></label></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h2>4. Primera sesion con el usuario de dominio</h2>
+    <ul class="checklist">
+      <li><label class="check-item" for="check-item-20"><input id="check-item-20" type="checkbox"><span class="check-text">En el equipo, seleccionar <strong>Otro usuario</strong> si fuera necesario.</span></label></li>
+      <li><label class="check-item" for="check-item-21"><input id="check-item-21" type="checkbox"><span class="check-text">Iniciar sesion con el usuario de dominio recien creado.</span></label></li>
+      <li><label class="check-item" for="check-item-22"><input id="check-item-22" type="checkbox"><span class="check-text">Comprobar que se crea el perfil del usuario correctamente.</span></label></li>
+      <li><label class="check-item" for="check-item-23"><input id="check-item-23" type="checkbox"><span class="check-text">Esperar a que el escritorio quede cargado por completo antes de seguir.</span></label></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h2>5. Instalacion base de software</h2>
+    <ul class="checklist">
+      <li><label class="check-item" for="check-item-24"><input id="check-item-24" type="checkbox"><span class="check-text">Instalar <strong>SentinelOne EDR</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-25"><input id="check-item-25" type="checkbox"><span class="check-text">Instalar con configuracion estandar: <strong>Java Oracle</strong>, <strong>Adobe Reader</strong>, <strong>Office 365</strong> y <strong>WinRAR</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-26"><input id="check-item-26" type="checkbox"><span class="check-text">Instalar <strong>Parallels</strong> solo si el puesto necesita acceso remoto publicado.</span></label></li>
+      <li><label class="check-item" for="check-item-27"><input id="check-item-27" type="checkbox"><span class="check-text">Instalar <strong>NetExtender</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-28"><input id="check-item-28" type="checkbox"><span class="check-text">Configurar NetExtender apuntando al dominio que corresponda:
+        <br>secure.grupo-alonso.com:4433
+        <br>secure.operinter.com:4433</span></label></li>
+    </ul>
+  </div>
+
+  <div class="page-break"></div>
+
+  <div class="block">
+    <h2>6. Herramientas especificas por empresa</h2>
+    <table class="summary">
+      <tbody><tr>
+        <th>Software / acceso</th>
+        <th>Necesario</th>
+        <th>Instalado</th>
+        <th>Probado</th>
+        <th>Observaciones</th>
+      </tr>
+      <tr><td>Manager / transitarios</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Sage</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Siltra</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Contenedores</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Taric</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Otro</td><td></td><td></td><td></td><td></td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="page-break"></div>
+
+  <div class="block">
+    <h2>7. Configuracion dentro del remoto</h2>
+    <ul class="checklist">
+      <li><label class="check-item" for="check-item-29"><input id="check-item-29" type="checkbox"><span class="check-text">Abrir Edge dentro del remoto.</span></label></li>
+      <li><label class="check-item" for="check-item-30"><input id="check-item-30" type="checkbox"><span class="check-text">Iniciar sesion en Edge con la cuenta de correo creada para sincronizar marcadores.</span></label></li>
+      <li><label class="check-item" for="check-item-31"><input id="check-item-31" type="checkbox"><span class="check-text">Entrar en Microsoft 365 con esa misma cuenta.</span></label></li>
+      <li><label class="check-item" for="check-item-32"><input id="check-item-32" type="checkbox"><span class="check-text">Anadir a marcadores las aplicaciones necesarias, como minimo: <strong>Teams</strong>, <strong>Outlook</strong> y <strong>OneDrive</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-33"><input id="check-item-33" type="checkbox"><span class="check-text">Abrir el Outlook de escritorio del remoto.</span></label></li>
+      <li><label class="check-item" for="check-item-34"><input id="check-item-34" type="checkbox"><span class="check-text">Iniciar sesion con la cuenta de correo creada.</span></label></li>
+      <li><label class="check-item" for="check-item-35"><input id="check-item-35" type="checkbox"><span class="check-text">Confirmar que Outlook carga el buzon correctamente.</span></label></li>
+      <li><label class="check-item" for="check-item-36"><input id="check-item-36" type="checkbox"><span class="check-text">Cerrar la sesion remota siguiendo el flujo indicado en el procedimiento.</span></label></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h2>8. Configuracion del puesto local para el usuario</h2>
+    <ul class="checklist">
+      <li><label class="check-item" for="check-item-37"><input id="check-item-37" type="checkbox"><span class="check-text">Abrir Outlook en el equipo local.</span></label></li>
+      <li><label class="check-item" for="check-item-38"><input id="check-item-38" type="checkbox"><span class="check-text">Seleccionar <strong>Iniciar sesion</strong> o <strong>Crear cuenta</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-39"><input id="check-item-39" type="checkbox"><span class="check-text">Introducir la cuenta de correo creada y su contrasena.</span></label></li>
+      <li><label class="check-item" for="check-item-40"><input id="check-item-40" type="checkbox"><span class="check-text">En el asistente, volver a escribir el correo cuando lo solicite.</span></label></li>
+      <li><label class="check-item" for="check-item-41"><input id="check-item-41" type="checkbox"><span class="check-text">Desmarcar la opcion <strong>Configurar Outlook Mobile en mi telefono tambien</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-42"><input id="check-item-42" type="checkbox"><span class="check-text">Finalizar la configuracion de Outlook.</span></label></li>
+      <li><label class="check-item" for="check-item-43"><input id="check-item-43" type="checkbox"><span class="check-text">Abrir Teams.</span></label></li>
+      <li><label class="check-item" for="check-item-44"><input id="check-item-44" type="checkbox"><span class="check-text">Iniciar sesion con la misma cuenta y contrasena.</span></label></li>
+      <li><label class="check-item" for="check-item-45"><input id="check-item-45" type="checkbox"><span class="check-text">Cuando aparezca la pregunta de administracion del dispositivo, responder segun el procedimiento vigente; el manual original indica <strong>No</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-46"><input id="check-item-46" type="checkbox"><span class="check-text">Configurar las <strong>unidades de red necesarias</strong> para el puesto, incluidas las compartidas o NAS que apliquen.</span></label></li>
+      <li><label class="check-item" for="check-item-47"><input id="check-item-47" type="checkbox"><span class="check-text">Instalar la <strong>impresora</strong> que corresponda al usuario o a la sede.</span></label></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h2>9. BitLocker y copia de la clave</h2>
+    <ul class="checklist">
+      <li><label class="check-item" for="check-item-48"><input id="check-item-48" type="checkbox"><span class="check-text">Conectar un USB al equipo.</span></label></li>
+      <li><label class="check-item" for="check-item-49"><input id="check-item-49" type="checkbox"><span class="check-text">Abrir la administracion de BitLocker desde <strong>Este equipo &gt; Disco local C &gt; Administrar BitLocker</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-50"><input id="check-item-50" type="checkbox"><span class="check-text">Seleccionar <strong>Copia de seguridad de la clave de recuperacion</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-51"><input id="check-item-51" type="checkbox"><span class="check-text">Introducir las credenciales de administrador de dominio si se solicitan.</span></label></li>
+      <li><label class="check-item" for="check-item-52"><input id="check-item-52" type="checkbox"><span class="check-text">Guardar la clave en un archivo.</span></label></li>
+      <li><label class="check-item" for="check-item-53"><input id="check-item-53" type="checkbox"><span class="check-text">Elegir el USB y la carpeta <strong>bitlocker</strong>.</span></label></li>
+      <li><label class="check-item" for="check-item-54"><input id="check-item-54" type="checkbox"><span class="check-text">Nombrar el archivo anadiendo el nombre del equipo.</span></label></li>
+    </ul>
+  </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    // ============================================================
+    // CONFIGURACION: SIN AUTO-GUARDADO
+    // La web siempre empieza en blanco.
+    // Solo se usa el boton "Exportar a PDF" para guardar.
+    // ============================================================
+
+    document.querySelectorAll(".checklist li").forEach((item, index) => {
+      const content = item.innerHTML.trim();
+      if (!content) {
+        return;
+      }
+
+      const checkboxId = "check-item-" + index;
+      item.innerHTML = "<label class=\"check-item\" for=\"" + checkboxId + "\"><input id=\"" + checkboxId + "\" type=\"checkbox\"><span class=\"check-text\">" + content + "</span></label>";
+
+      const checkbox = item.querySelector("input[type=\"checkbox\"]");
+      const label = item.querySelector(".check-item");
+
+      checkbox.addEventListener("change", () => {
+        label.classList.toggle("is-checked", checkbox.checked);
+      });
+    });
+
+    const metaInputs = Array.from(document.querySelectorAll(".meta-input"));
+    const checklistInputs = Array.from(document.querySelectorAll(".check-item input[type=\"checkbox\"]"));
+    const exportButton = document.getElementById("export-pdf");
+    const pdfRoot = document.getElementById("pdf-root");
+
+    function syncPrintableState() {
+      metaInputs.forEach((input) => {
+        input.setAttribute("value", input.value);
+      });
+
+      checklistInputs.forEach((checkbox) => {
+        if (checkbox.checked) {
+          checkbox.setAttribute("checked", "checked");
+        } else {
+          checkbox.removeAttribute("checked");
+        }
+      });
+    }
+
+    function buildPdfFileName() {
+      const empresa = (document.querySelector('[data-field="empresa"]')?.value || "").trim();
+      const usuario = (document.querySelector('[data-field="usuario-final"]')?.value || "").trim();
+      const suffix = [empresa, usuario].filter(Boolean).join(" - ");
+      return (suffix ? "Checklist configuracion de equipos - " + suffix : "Checklist configuracion de equipos") + ".pdf";
+    }
+
+    exportButton.addEventListener("click", async () => {
+      syncPrintableState();
+
+      if (window.html2pdf) {
+        const previousTitle = document.title;
+        exportButton.disabled = true;
+        exportButton.textContent = "Generando PDF...";
+
+        try {
+          document.title = buildPdfFileName().replace(/\.pdf$/i, "");
+          await window.html2pdf().set({
+            margin: [5, 5, 5, 5],
+            filename: buildPdfFileName(),
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+            pagebreak: { mode: ["css", "legacy"] }
+          }).from(pdfRoot).save();
+        } catch (error) {
+          console.error("No se pudo generar el PDF directo. Se abre la impresion como alternativa.", error);
+          window.print();
+        } finally {
+          document.title = previousTitle;
+          exportButton.disabled = false;
+          exportButton.textContent = "Exportar a PDF";
+        }
+        return;
+      }
+
+      window.print();
+    });
+
+    window.addEventListener("beforeprint", syncPrintableState);
+  </script>
+
+</body></html>
